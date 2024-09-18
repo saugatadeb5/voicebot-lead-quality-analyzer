@@ -7,16 +7,13 @@ import string
 import re
 import time
 
-# Initialize the translator
 translator = GoogleTranslator()
 
-# Load a specialized financial sentiment analysis model
 model_name = 'yiyanghkust/finbert-tone'
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = AutoModelForSequenceClassification.from_pretrained(model_name)
 sentiment_pipeline = pipeline('sentiment-analysis', model=model, tokenizer=tokenizer, truncation=True, padding=True, max_length=512)
 
-# Define domain-specific positive and negative phrases, and date-related keywords
 positive_synonyms = [
     'yes', 'yea', 'yep', 'yeah', 'yup', 'sure', 'affirmative', 'certainly', 'absolutely',
     'definitely', 'of course', 'right', 'correct', 'agree', 'okay', 'ok', 'yass', 'yasss',
@@ -42,18 +39,15 @@ simple_phrases = {
 
 greetings = {'hello', 'hi', 'hey', 'goodbye', 'morning', 'evening', 'night'}
 
-# Define keywords related to medical, financial, or circumstantial issues
 quality_reason_keywords = [
     'death', 'hospitalized', 'financial issue', 'job loss', 'left job', 'poor family condition','bittiye'
     'medical', 'sick', 'unemployed', 'family crisis', 'financial difficulty','give me some time','fund issue','i want some time',
 ]
 
-# Define payment methods
 payment_methods = [
     'upi', 'online payment', 'credit card', 'debit card', 'bank transfer', 'cash'
 ]
 
-# Define phrases that indicate non-quality leads despite having other intents
 non_quality_indicators = [
     'will not pay', 'unable to pay', 'cannot afford', 'not interested', 'decline', 'reject',
     'cannot make payment','cant pay','never pay', 'no payment', 'not going to pay'
@@ -61,13 +55,10 @@ non_quality_indicators = [
 
 def preprocess_text(text):
     """Preprocess the text: remove punctuation, convert to lowercase, strip whitespace."""
-    # Define characters to remove
     remove_chars = string.punctuation + '.,;'
     
-    # Create translation table
     trans_table = str.maketrans('', '', remove_chars)
     
-    # Remove characters and preprocess text
     text = text.translate(trans_table).strip().lower()
     return text
 
@@ -130,22 +121,18 @@ def translate_and_classify(text):
         return 'No Utterance Available'
     
     try:
-        # Translate text to English
         translated_text = translator.translate(text, source='auto', target='en')
         if not translated_text:
             return 'Non-Quality Lead'
 
-        # Preprocess the translated text
         cleaned_text = preprocess_text(translated_text)
         
-        # Check for common greetings
         if is_greeting(cleaned_text):
-            return 'Non-Quality Lead'  # Treat greetings as non-quality leads
+            return 'Non-Quality Lead'  
         
         if contains_non_quality_indicator(cleaned_text) and not contains_future_payment_commitment(cleaned_text):
             return 'Non-Quality Lead'
 
-        # Apply domain-specific rules
         if contains_negative_synonym(cleaned_text) and contains_non_quality_indicator(cleaned_text):
             return 'Non-Quality Lead'
         
@@ -167,7 +154,6 @@ def translate_and_classify(text):
         if contains_future_payment_commitment(cleaned_text) or contains_payment_intent(cleaned_text):
             return 'Quality Lead'
         
-        # Classify sentiment using the specialized model
         result = sentiment_pipeline(cleaned_text)
         label = result[0]['label']
         if label == 'POSITIVE':
@@ -177,7 +163,6 @@ def translate_and_classify(text):
         else:
             return 'Non-Quality Lead'
     except Exception as e:
-        # If any exception occurs, classify the response as neutral
         print(f"Exception occurred: {e}")
         return 'Non-Quality Lead'
 
@@ -201,10 +186,8 @@ def classify_texts_in_batches(texts, batch_size=100, num_workers=4):
     
     return all_sentiments
 
-# Streamlit app
 st.set_page_config(page_title="AI-Powered Lead Quality Analyzer", layout="wide")
 
-# Custom CSS for a professional look
 st.markdown("""
     <style>
         body {
@@ -291,7 +274,6 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Main content of the app
 st.markdown("""
     <div style="text-align: center; margin-bottom: 20px;">
         <h1 class="stTitle">🚀 LLM-Powered Lead Quality Analyzer</h1>
@@ -303,7 +285,6 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# File upload section
 st.header("Upload Your CSV File")
 
 st.markdown("""
@@ -327,11 +308,11 @@ if uploaded_file is not None:
         
         if st.button("Start Classification"):
             with st.spinner('Processing your file...'):
-                time.sleep(1)  # Simulate processing delay
+                time.sleep(1)  
                 utterances = df['utterance'].tolist()
                 df['sentiment'] = classify_texts_in_batches(utterances)
 
-                # Determine Quality or Non-Quality Leads
+               
                 def determine_lead_quality(sentiment):
                     """Determine the lead quality based on sentiment."""
                     if sentiment == 'Quality Lead':
@@ -359,7 +340,6 @@ if uploaded_file is not None:
                     key='download_button'
                 )
 
-# Individual text classification section
 st.header("Classify Individual Text")
 
 st.markdown("""
