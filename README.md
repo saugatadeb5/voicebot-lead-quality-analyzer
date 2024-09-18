@@ -2,9 +2,73 @@
 
 ## Introduction
 
-The **AI-Powered Lead Quality Analyzer** is a Streamlit application designed to classify leads based on textual interactions (utterances) using advanced Natural Language Processing (NLP) techniques. Leveraging the power of **FinBERT**, a financial sentiment analysis model, and incorporating domain-specific heuristics, the application determines whether a lead is of "Quality" or "Non-Quality" based on the content of their communication.
+The **AI-Powered Lead Quality Analyzer** is a designed to classify leads based on textual interactions (utterances) Leveraging the power of **FinBERT: A Large Language Model for Extracting Information from Financial Text**, and incorporating domain-specific heuristics, the application determines whether a lead is of "Quality" or "Non-Quality" based on the content of their communication.
 
 This documentation provides a comprehensive overview of the application's architecture, detailing each component's role and how they interact to deliver accurate lead quality assessments.
+
+### Usage:
+
+### Steps to Download
+
+### **Step 1: Clone the Repository**
+
+1. Open your terminal (Command Prompt, Git Bash, etc.).
+2. Clone the repository from GitHub to your local machine.
+    
+    ```bash
+    git clone https://github.com/saugatadeb5/voicebot-lead-quality-analyzer.git
+    ```
+    
+
+### **Step 2: Navigate to the Project Directory**
+
+1. Change the current directory to the folder where you cloned the repository:
+    
+    ```bash
+    cd voicebot-lead-quality-analyzer
+    ```
+    
+
+### **Step 3: Create a Virtual Environment (Optional but Recommended)**
+
+1. Create a virtual environment to manage dependencies:
+    
+    ```bash
+    python -m venv venv
+    ```
+    
+2. Activate the virtual environment:
+    - On **Windows**:
+        
+        ```bash
+        venv\Scripts\activate
+        ```
+        
+    - On **macOS/Linux**:
+        
+        ```bash
+        source venv/bin/activate
+        ```
+        
+
+### **Step 4: Install Dependencies**
+
+1. Install the required Python packages using `requirements.txt`:
+    
+    ```bash
+    pip install -r requirements.txt
+    ```
+    
+
+### **Step 5: Run the Streamlit Application**
+
+1. Start the Streamlit app by running the following command:
+    
+    ```bash
+    streamlit run app.py
+    ```
+    
+2. After running the command, the application will launch in your default web browser, or you can access it by navigating to **http://localhost:8501**.
 
 ---
 
@@ -60,6 +124,8 @@ The application consists of the following key components:
 - **Purpose**: Translates text from various languages to English to ensure consistent analysis.
 - **Library Used**: `deep_translator.GoogleTranslator`
 
+![Machine-Translation-Model.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/0fb337c8-6186-4010-911c-38ba2e525070/fa475e70-f67a-411a-9bc1-e3a28d822b1d/Machine-Translation-Model.png)
+
 **Process**:
 
 - Checks if the text is not empty or whitespace.
@@ -101,11 +167,14 @@ The application consists of the following key components:
 ### 5. Sentiment Analysis Module
 
 - **Purpose**: Analyzes the sentiment of the text to aid in lead quality determination.
-- **Model Used**: `yiyanghkust/finbert-tone`, a FinBERT model fine-tuned for financial sentiment analysis.
+- **Model Used**: `yiyanghkust/finbert-tone`, a FinBERT **A Large Language Model for Extracting Information from Financial Text.**
 - **Libraries**:
     - `transformers.pipeline`
     - `AutoTokenizer`
     - `AutoModelForSequenceClassification`
+    
+    ![fig-2-full.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/0fb337c8-6186-4010-911c-38ba2e525070/b30f838f-b216-41a5-a15e-7af77b0e535b/fig-2-full.png)
+    
 
 **Process**:
 
@@ -243,12 +312,6 @@ The application consists of the following key components:
 
 ---
 
-## Conclusion
-
-The **AI-Powered Lead Quality Analyzer** combines advanced NLP models with domain-specific knowledge to deliver a robust solution for lead classification. By integrating FinBERT for sentiment analysis and applying custom heuristics, the application offers nuanced insights into lead quality. The use of Streamlit for the UI ensures an accessible and interactive user experience, while concurrent processing optimizes performance for large datasets.
-
-This documentation serves as a comprehensive guide to understanding the application's architecture and processing flow, providing valuable insights for further development, maintenance, or enhancement.
-
 ---
 
 ## Future Enhancements
@@ -262,12 +325,12 @@ This documentation serves as a comprehensive guide to understanding the applicat
 
 ## References
 
-- **FinBERT Model**: yiyanghkust/finbert-tone
-- **Streamlit Documentation**: Streamlit Docs
-- **Transformers Library**: Hugging Face Transformers
+- **FinBERT Model**: [yiyanghkust/finbert-tone](https://onlinelibrary.wiley.com/doi/full/10.1111/1911-3846.12832)
+- **Streamlit Documentation**: [Streamlit Docs](https://docs.streamlit.io/)
+- **Transformers Library**: [Hugging Face Transformers](https://huggingface.co/docs)
 - **Deep Translator**: [deep-translator GitHub](https://github.com/nidhaloff/deep-translator)
-- **Pandas Library**: Pandas Documentation
+- **Pandas Library**: [Pandas Documentation](https://pandas.pydata.org/docs/index.html)
 
 ---
 
-*This architectural documentation is intended to provide a clear and detailed understanding of the AI-Powered Lead Quality Analyzer's components and their interactions. For any questions or further clarifications, please refer to the source code or reach out to the development team.*
+*This architectural documentation is intended to provide a clear and detailed understanding of the AI-Powered Lead Quality Analyzer's components and their interactions. For any questions or further clarifications, please refer to the source code or reach out to developer.*
