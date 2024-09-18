@@ -1,5 +1,8 @@
 # AI-Powered Lead Quality Analyzer: Architectural Documentation
 
+<img width="1512" alt="Screenshot 2024-09-18 at 13 23 26" src="https://github.com/user-attachments/assets/59abf13c-3310-47ed-b2aa-ce9073b42509">
+
+
 ## Introduction
 
 The **AI-Powered Lead Quality Analyzer** is a designed to classify leads based on textual interactions (utterances) Leveraging the power of **FinBERT: A Large Language Model for Extracting Information from Financial Text**, and incorporating domain-specific heuristics, the application determines whether a lead is of "Quality" or "Non-Quality" based on the content of their communication.
