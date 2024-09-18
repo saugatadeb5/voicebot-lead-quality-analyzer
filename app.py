@@ -26,7 +26,7 @@ positive_synonyms = [
 
 negative_synonyms = [
     'no', 'nay', 'nope', 'not', 'negative', 'against', 'disagree', 'unfortunately','never','nai','never','cant pay',"wouldn't",'will not',"shouldn't",
-    'nahi ji'  # Romanized Hindi for 'no'
+    'nahi ji','wont pay',"won't"  # Romanized Hindi for 'no'
 ]
 
 date_keywords = [
@@ -99,6 +99,10 @@ def contains_negative_synonym(text):
     """Check if the text contains any negative synonym or variant."""
     return any(synonym in text for synonym in negative_synonyms)
 
+def contains_negative_synonym(text):
+    """Check if the text contains any negative synonym or variant."""
+    return any(synonym in text for synonym in negative_synonyms)
+
 def is_simple_phrase(text):
     """Check if the text is a simple phrase."""
     return text in simple_phrases
@@ -145,6 +149,8 @@ def translate_and_classify(text):
         if contains_negative_synonym(cleaned_text) and contains_non_quality_indicator(cleaned_text):
             return 'Non-Quality Lead'
         
+        if contains_negative_synonym(cleaned_text) and contains_payment_intent(cleaned_text):
+            return 'Non-Quality Lead'
         
         if contains_quality_reason(cleaned_text):
             return 'Quality Lead'
