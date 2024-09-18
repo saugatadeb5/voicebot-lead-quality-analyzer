@@ -7,6 +7,7 @@ import string
 import re
 import time
 
+
 translator = GoogleTranslator()
 
 model_name = 'yiyanghkust/finbert-tone'
@@ -350,7 +351,7 @@ st.markdown("""
 
 input_text = st.text_area("Enter your text here:", placeholder="Type your text here...", height=100)
 
-if st.button("Classify Text"):
+if st.button("Analyze Text"):
     if input_text:
         st.write("Analizing text...")
         result = translate_and_classify(input_text)
