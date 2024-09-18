@@ -124,7 +124,8 @@ The application consists of the following key components:
 - **Purpose**: Translates text from various languages to English to ensure consistent analysis.
 - **Library Used**: `deep_translator.GoogleTranslator`
 
-![Machine-Translation-Model.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/0fb337c8-6186-4010-911c-38ba2e525070/fa475e70-f67a-411a-9bc1-e3a28d822b1d/Machine-Translation-Model.png)
+![alt text](https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.geeksforgeeks.org%2Fmachine-translation-of-languages-in-artificial-intelligence%2F&psig=AOvVaw1BfOcIDtVDTgHW6TTxLcFY&ust=1726736259048000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCJCBqv6PzIgDFQAAAAAdAAAAABAJ)
+
 
 **Process**:
 
