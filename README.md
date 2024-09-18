@@ -174,7 +174,7 @@ The application consists of the following key components:
     - `AutoTokenizer`
     - `AutoModelForSequenceClassification`
     
-    ![fig-2-full.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/0fb337c8-6186-4010-911c-38ba2e525070/b30f838f-b216-41a5-a15e-7af77b0e535b/fig-2-full.png)
+    ![fig-2-full.png](https://dfzljdn9uc3pi.cloudfront.net/2023/cs-1403/1/fig-2-full.png)
     
 
 **Process**:
