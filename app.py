@@ -23,8 +23,8 @@ positive_synonyms = [
 ]
 
 negative_synonyms = [
-    'no', 'nay', 'nope', 'not', 'negative', 'against', 'disagree', 'unfortunately','never','nai','never','cant pay',"wouldn't",'will not',"shouldn't",
-    'nahi ji','wont pay',"won't"  # Romanized Hindi for 'no'
+    'no', 'nay', 'nope', 'not', 'negative', 'against', 'disagree', 'unfortunately','never','nai','never','cant',"wouldn't",'will not',"shouldn't","cannot","would not"
+    'nahi ji','wont',"won't"  # Romanized Hindi for 'no'
 ]
 
 date_keywords = [
@@ -41,7 +41,7 @@ simple_phrases = {
 greetings = {'hello', 'hi', 'hey', 'goodbye', 'morning', 'evening', 'night'}
 
 quality_reason_keywords = [
-    'death', 'hospitalized', 'financial issue', 'job loss', 'left job', 'poor family condition','bittiye','medical issue'
+    'death', 'hospitalised', 'financial issue', 'job loss', 'left job', 'poor family condition','bittiye','medical issue'
     'medical', 'sick', 'unemployed', 'family crisis', 'financial difficulty','give me some time','fund issue','i want some time',
 ]
 
@@ -51,7 +51,7 @@ payment_methods = [
 
 non_quality_indicators = [
     'will not pay', 'unable to pay', 'cannot afford', 'not interested', 'decline', 'reject',
-    'cannot make payment','cant pay','never pay', 'no payment', 'not going to pay'
+    'cannot make payment','cant pay','never pay', 'no payment', 'not going to pay','cannot pay'
 ]
 
 def preprocess_text(text):
@@ -166,7 +166,7 @@ def translate_and_classify(text):
         elif label == 'NEGATIVE':
             return 'Non-Quality Lead'
         else:
-            return 'Non-Quality Lead'
+            return 'Quality Lead'
     except Exception as e:
         print(f"Exception occurred: {e}")
         return 'Non-Quality Lead'
