@@ -41,7 +41,7 @@ simple_phrases = {
 greetings = {'hello', 'hi', 'hey', 'goodbye', 'morning', 'evening', 'night'}
 
 quality_reason_keywords = [
-    'death', 'hospitalized', 'financial issue', 'job loss', 'left job', 'poor family condition','bittiye'
+    'death', 'hospitalized', 'financial issue', 'job loss', 'left job', 'poor family condition','bittiye','medical issue'
     'medical', 'sick', 'unemployed', 'family crisis', 'financial difficulty','give me some time','fund issue','i want some time',
 ]
 
@@ -107,6 +107,7 @@ def contains_non_quality_indicator(text):
     """Check if the text contains phrases indicating non-quality leads."""
     return any(phrase in text for phrase in non_quality_indicators)
 
+
 def contains_payment_intent(text):
     """Check if the text indicates a payment intent or method."""
     return 'pay' in text or 'payment' in text or any(method in text for method in payment_methods)
@@ -144,6 +145,9 @@ def translate_and_classify(text):
             return 'Quality Lead'
 
         if contains_quality_reason(cleaned_text) or contains_positive_synonym(cleaned_text) or contains_date_or_time(cleaned_text):
+            return 'Quality Lead'
+        
+        if contains_quality_reason(cleaned_text) and (contains_negative_synonym(cleaned_text) or contains_date_or_time(cleaned_text) or contains_non_quality_indicator(cleaned_text)):
             return 'Quality Lead'
         
         if is_simple_phrase(cleaned_text):
