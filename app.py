@@ -15,6 +15,8 @@ tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = AutoModelForSequenceClassification.from_pretrained(model_name)
 sentiment_pipeline = pipeline('sentiment-analysis', model=model, tokenizer=tokenizer, truncation=True, padding=True, max_length=512)
 
+
+#reason/disposition quality/rules checks needed
 positive_synonyms = [
     'yes', 'yea', 'yep', 'yeah', 'yup', 'sure', 'affirmative', 'certainly', 'absolutely',
     'definitely', 'of course', 'right', 'correct', 'agree', 'okay', 'ok', 'yass', 'yasss',
@@ -359,19 +361,18 @@ input_text = st.text_area("Enter your text here:", placeholder="Type your text h
 
 if st.button("Analyze Text"):
     if input_text:
-        # Create an empty placeholder for the animated message
         message_placeholder = st.empty()
 
         # Simulate the "Analyzing text..." animation
-        for i in range(5):  # You can adjust the range for longer animation
+        for i in range(5): 
             message_placeholder.text(f"Analyzing text{'.' * (i % 4)}")
             time.sleep(0.5)  # Adjust the speed of animation (0.5 seconds here)
 
-        # Run the text classification process
+       
         result = translate_and_classify(input_text)
 
-        # Once processing is done, replace the placeholder with the result
-        message_placeholder.empty()  # Clear the "Analyzing text..." message
+  
+        message_placeholder.empty() 
         st.write(f"**Classification Result:** {result}")
     else:
         st.warning("Please enter some text to classify.")
