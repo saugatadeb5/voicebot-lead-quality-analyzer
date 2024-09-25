@@ -286,7 +286,7 @@ st.markdown("""
         <h1 class="stTitle">🚀 LLM-Powered Lead Quality Analyzer</h1>
         <p style="font-size: 1.5em; color: #8033ff;">Welcome to the AI-Powered Lead Quality Analyzer! 🌟</p>
         <p style="font-size: 1.2em; color: #555;">
-            This tool leverages FinBERT for sentiment analysis and provides a comprehensive lead quality evaluation.
+            This tool utilizes FinBERT for customer's sentiment analysis and offers a thorough evaluation of lead quality based on required reason or disposition utterances within the collections industry.
         </p>
         <img src="https://media.licdn.com/dms/image/v2/D560BAQGztDL9Ut7okA/company-logo_200_200/company-logo_200_200/0/1708509740424/dpdzero_logo?e=2147483647&v=beta&t=A-fO6oYLlIpYF5P57qnf490Ekxnn0z8HMBo2gJu9jfo" alt="Description of Image" style="width: 18%; max-width: 200px;"/>
     </div>
