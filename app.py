@@ -146,17 +146,15 @@ def translate_and_classify(text):
         if contains_quality_reason(cleaned_text):
             return 'Quality Lead'
 
-        if contains_quality_reason(cleaned_text) or contains_positive_synonym(cleaned_text) or contains_date_or_time(cleaned_text):
+        if contains_quality_reason(cleaned_text) and (contains_positive_synonym(cleaned_text) or contains_date_or_time(cleaned_text)):
             return 'Quality Lead'
         
         if contains_quality_reason(cleaned_text) and (contains_negative_synonym(cleaned_text) or contains_date_or_time(cleaned_text) or contains_non_quality_indicator(cleaned_text)):
             return 'Quality Lead'
         
         if is_simple_phrase(cleaned_text):
-            return 'Quality Lead'
+            return 'Non-Quality Lead'
         
-        if contains_future_payment_commitment(cleaned_text):
-            return 'Quality Lead'
         
         if contains_future_payment_commitment(cleaned_text) or contains_payment_intent(cleaned_text):
             return 'Quality Lead'
@@ -167,8 +165,10 @@ def translate_and_classify(text):
             return 'Quality Lead'
         elif label == 'NEGATIVE':
             return 'Non-Quality Lead'
+        elif label == 'NEUTRAL':
+            return 'Non-Quality Lead'
         else:
-            return 'Quality Lead'
+            return 'Non-Quality Lead'
     except Exception as e:
         print(f"Exception occurred: {e}")
         return 'Non-Quality Lead'
