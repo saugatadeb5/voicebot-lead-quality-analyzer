@@ -30,13 +30,13 @@ negative_synonyms = [
 
 payment_intent_phrases = [
     'pay', 'payment', 'paying', 'i am paying now', 'will pay', 
-    'intend to pay', 'promise to pay', 'want to pay', 'am paying'
+    'intend to pay', 'promise to pay', 'want to pay', 'am paying','already paid'
 ]
 
 quality_reason_keywords = [
     'hospitalised', 'financial issue', 'job loss', 'poor family condition',
     'medical issue', 'sick', 'unemployed', 'family crisis', 'financial difficulty',
-    'cow ran away','divorce','marriage','fund problem', 'fund issue'
+    'cow ran away','divorce','marriage','fund problem', 'fund issue','will deposit','multiple loans'
 ]
 
 non_quality_indicators = [
@@ -291,9 +291,9 @@ if uploaded_file is not None:
         st.write(lead_distribution)
 
         # Create a pie chart with smaller label size
-        fig, ax = plt.subplots(figsize=(3, 3))  # Set figure size
+        fig, ax = plt.subplots(figsize=(3, 3))  # Set figure size and DPI for higher resolution
         ax.pie(lead_distribution, labels=lead_distribution.index, autopct='%1.1f%%', startangle=90, 
-               colors=['#4CAF50', '#FF9800', '#F44336'], textprops={'fontsize': 7})  # Reduce font size for labels and percentages
+        colors=['#4CAF50', '#FF9800', '#F44336'], textprops={'fontsize':  7})  # Reduce font size for labels and percentages
         ax.axis('equal')  # Equal aspect ratio ensures the pie is drawn as a circle.
 
         # Display pie chart
