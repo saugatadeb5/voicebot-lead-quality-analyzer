@@ -27,7 +27,7 @@ negative_synonyms = [
 
 payment_intent_phrases = [
     'pay', 'payment', 'paying', 'i am paying now', 'will pay', 
-    'intend to pay', 'promise to pay', 'want to pay','paying'
+    'intend to pay', 'promise to pay', 'want to pay','am paying'
 ]
 
 quality_reason_keywords = [
