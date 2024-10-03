@@ -32,7 +32,7 @@ payment_intent_phrases = [
 
 quality_reason_keywords = [
     'hospitalised', 'financial issue', 'job loss', 'poor family condition',
-    'medical issue', 'sick', 'unemployed', 'family crisis', 'financial difficulty','cow left way'
+    'medical issue', 'sick', 'unemployed', 'family crisis', 'financial difficulty','cow left away'
 ]
 
 non_quality_indicators = [
