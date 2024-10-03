@@ -7,6 +7,7 @@ import string
 import re
 import time
 
+# Initialize Translator and FinBERT Model
 translator = GoogleTranslator()
 model_name = 'yiyanghkust/finbert-tone'
 tokenizer = AutoTokenizer.from_pretrained(model_name)
@@ -22,22 +23,37 @@ positive_synonyms = [
 
 negative_synonyms = [
     'no', 'nay', 'nope', 'not', 'negative', 'against', 'disagree', 
-    'unfortunately', 'never', 'nai', 'won\'t', 'nahi ji','wont'
+    'unfortunately', 'never', 'nai', 'won\'t', 'nahi ji', 'wont'
 ]
 
 payment_intent_phrases = [
     'pay', 'payment', 'paying', 'i am paying now', 'will pay', 
-    'intend to pay', 'promise to pay', 'want to pay','am paying'
+    'intend to pay', 'promise to pay', 'want to pay', 'am paying'
 ]
 
 quality_reason_keywords = [
     'hospitalised', 'financial issue', 'job loss', 'poor family condition',
-    'medical issue', 'sick', 'unemployed', 'family crisis', 'financial difficulty','cow left away'
+    'medical issue', 'sick', 'unemployed', 'family crisis', 'financial difficulty',
+    'cow ran away','divorce','marriage','fund problem',
 ]
 
 non_quality_indicators = [
     'will not pay', 'unable to pay', 'cannot afford', 'not interested', 
-    'decline', 'reject', 'no payment', 'not going to pay', 'cant pay','wont pay','not paying'
+    'decline', 'reject', 'no payment', 'not going to pay', 'cant pay', 'wont pay', 'not paying'
+]
+
+# Add date-related phrases
+date_synonyms = [
+    'yesterday', 'today', 'tomorrow', 'day after tomorrow', 'next week',
+    'next month', 'call me on', 'reach me on', 'available on', 'please contact on'
+]
+
+# Regex to capture common date patterns (e.g., 25th, 2024-10-03, etc.)
+date_patterns = [
+    r'\b\d{1,2}(st|nd|rd|th)?\b',  # Matches ordinal dates like 25th, 1st, 2nd
+    r'\b\d{4}-\d{2}-\d{2}\b',      # Matches dates in YYYY-MM-DD format
+    r'\b\d{2}/\d{2}/\d{4}\b',      # Matches dates in MM/DD/YYYY format
+    r'\b\d{1,2}/\d{1,2}\b'         # Matches MM/DD or DD/MM format
 ]
 
 # Preprocessing and Classification Functions
@@ -51,40 +67,59 @@ def contains_keywords(text, keywords):
     """Check if the text contains any keywords from the list."""
     return any(keyword in text for keyword in keywords)
 
+def contains_dates(text):
+    """Check if the text contains date-related keywords or matches date patterns."""
+    # Check for date-related synonyms (like 'yesterday', 'tomorrow')
+    if contains_keywords(text, date_synonyms):
+        return True
+    
+    # Check for specific date patterns using regex
+    for pattern in date_patterns:
+        if re.search(pattern, text):
+            return True
+    
+    return False
+
 def translate_and_classify(text):
-    """Translate text to English, preprocess, and classify sentiment."""
+    """Translate text to English, preprocess, and classify sentiment into High, Medium, or Low Quality Lead."""
     if not text.strip():
         return 'No Utterance Available'
     
     try:
+        # Step 1: Translate the text to English if necessary
         translated_text = translator.translate(text, source='auto', target='en')
         if not translated_text:
-            return 'Non-Quality Lead'
-
+            return 'Low Quality Lead'
+        
+        # Step 2: Preprocess the translated text (lowercase, remove punctuation)
         cleaned_text = preprocess_text(translated_text)
 
-        # Check for non-quality indicators
+        # Step 3: Check for non-quality indicators FIRST
         if contains_keywords(cleaned_text, non_quality_indicators):
-            return 'Non-Quality Lead'
-        
-        # Check for quality reason indicators or positive payment intent
-        if contains_keywords(cleaned_text, quality_reason_keywords) or \
-           contains_keywords(cleaned_text, payment_intent_phrases):
-            return 'Quality Lead'
+            # If both non-quality indicators AND quality reasons exist, classify as Medium Quality
+            if contains_keywords(cleaned_text, quality_reason_keywords):
+                return 'Medium Quality Lead'
+            # Otherwise, it's Low Quality
+            return 'Low Quality Lead'  # STOP here if there's only a non-quality indicator
 
-        # Additional check for direct payment refusal phrases
-        if "won\'t pay" in cleaned_text or 'cannot pay' in cleaned_text:
-            return 'Non-Quality Lead'
+        # Step 4: Check for high-quality conditions (payment intent or positive synonyms with date or quality reasons)
+        if contains_keywords(cleaned_text, payment_intent_phrases):
+            return 'High Quality Lead'
 
-        result = sentiment_pipeline(cleaned_text)
-        label = result[0]['label']
-        return 'Quality Lead' if label == 'POSITIVE' else 'Non-Quality Lead'
-    
+        if contains_keywords(cleaned_text, positive_synonyms):
+            if contains_dates(cleaned_text) or contains_keywords(cleaned_text, quality_reason_keywords):
+                return 'High Quality Lead'
+
+        # Step 5: If only quality reasons exist without non-quality indicators, it's Medium Quality
+        if contains_keywords(cleaned_text, quality_reason_keywords):
+            return 'Medium Quality Lead'
+
+        # Step 6: Default to Low Quality if no other conditions are met
+        return 'Low Quality Lead'
+
     except Exception as e:
         print(f"Exception occurred: {e}")
-        return 'Non-Quality Lead'
-
-
+        return 'Low Quality Lead'
 
 def classify_texts_in_batches(texts, batch_size=100, num_workers=4):
     """Classify a batch of texts using a pre-trained model."""
@@ -198,10 +233,7 @@ if uploaded_file is not None:
         if st.button("Start Classification"):
             with st.spinner('Processing your file...'):
                 utterances = df['utterance'].tolist()
-                df['sentiment'] = classify_texts_in_batches(utterances)
-
-                df['lead_quality'] = df['sentiment'].apply(lambda x: 'Quality Lead' if x == 'Quality Lead' else 'Non-Quality Lead')
-                df.drop(columns=['sentiment'], inplace=True)
+                df['lead_quality'] = classify_texts_in_batches(utterances)
                 
                 output_file = 'classified_leads.csv'
                 df.to_csv(output_file, index=False)
