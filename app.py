@@ -27,17 +27,17 @@ negative_synonyms = [
 
 payment_intent_phrases = [
     'pay', 'payment', 'paying', 'i am paying now', 'will pay', 
-    'intend to pay', 'promise to pay', 'want to pay'
+    'intend to pay', 'promise to pay', 'want to pay','paying'
 ]
 
 quality_reason_keywords = [
     'hospitalised', 'financial issue', 'job loss', 'poor family condition',
-    'medical issue', 'sick', 'unemployed', 'family crisis', 'financial difficulty'
+    'medical issue', 'sick', 'unemployed', 'family crisis', 'financial difficulty','cow left way'
 ]
 
 non_quality_indicators = [
     'will not pay', 'unable to pay', 'cannot afford', 'not interested', 
-    'decline', 'reject', 'no payment', 'not going to pay', 'cant pay','wont pay'
+    'decline', 'reject', 'no payment', 'not going to pay', 'cant pay','wont pay','not paying'
 ]
 
 # Preprocessing and Classification Functions
