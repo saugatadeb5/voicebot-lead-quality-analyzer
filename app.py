@@ -100,7 +100,7 @@ def translate_and_classify(text):
     try:
         translated_text = translator.translate(text, source='auto', target='en')
         if not translated_text:
-            return 'Low Quality Lead'
+            return 'Medium Quality Lead'
         
         cleaned_text = preprocess_text(translated_text)
 
@@ -237,18 +237,24 @@ uploaded_file = st.file_uploader("Choose a CSV file", type=["csv"], label_visibi
 if 'processed_df' not in st.session_state:
     st.session_state['processed_df'] = None
 
+import streamlit as st
+import pandas as pd
+import plotly.express as px
+
+# Check if file is uploaded
 if uploaded_file is not None:
     if st.session_state.get('uploaded_filename') != uploaded_file.name:
         st.session_state['processed_df'] = None
         st.session_state['uploaded_filename'] = uploaded_file.name
 
     df = pd.read_csv(uploaded_file)
-    
+
     if 'utterance' not in df.columns:
         st.error("The dataset must contain an 'utterance' column.")
     else:
         st.success("File successfully uploaded. Preparing to analyze...")
-        
+
+        # Process dataframe if not already processed
         if st.session_state['processed_df'] is None:
             num_rows = df.shape[0]
             num_columns = df.shape[1]
@@ -257,6 +263,7 @@ if uploaded_file is not None:
             st.write("Dataset Preview:")
             st.dataframe(df.head())
 
+            # Classify the lead quality based on utterances
             utterances = df['utterance'].tolist()
             df['lead_quality'] = classify_texts_in_batches(utterances)
 
@@ -264,17 +271,50 @@ if uploaded_file is not None:
         else:
             df = st.session_state['processed_df']
 
-        lead_distribution = df['lead_quality'].value_counts(normalize=True) * 100
+        # Calculate lead distribution: count and percentage
+        lead_counts = df['lead_quality'].value_counts()
+        lead_percentage = df['lead_quality'].value_counts(normalize=True) * 100
+
+        # Create a new dataframe to show counts and percentages
+        lead_distribution_df = pd.DataFrame({
+            'Lead Quality': lead_counts.index,
+            'Count': lead_counts.values,
+            'Percentage': lead_percentage.round(2).values  # Two decimal places
+        })
+
         st.write("Lead Quality Distribution:")
-        st.write(lead_distribution)
+        st.dataframe(lead_distribution_df)
 
-        fig, ax = plt.subplots(figsize=(3, 3))
-        ax.pie(lead_distribution, labels=lead_distribution.index, autopct='%1.1f%%', startangle=90, 
-        colors=['#4CAF50', '#FF9800', '#F44336'], textprops={'fontsize':  7})
-        ax.axis('equal')
+        # Plotly bar chart for better visualization
+        bar_chart = px.bar(
+            lead_distribution_df, 
+            x='Lead Quality', 
+            y='Count', 
+            title='Lead Quality Distribution (Count)', 
+            text='Count', 
+            animation_frame=None,  # Add animation_frame if needed
+            height=300,  # Adjust height for compactness
+            width=500   # Adjust width for compactness
+        )
+        bar_chart.update_traces(textposition='outside', marker_color=['#4CAF50', '#FF9800', '#F44336'])
+        bar_chart.update_layout(font=dict(size=10), margin=dict(l=20, r=20, t=40, b=20))
+        st.plotly_chart(bar_chart)
 
-        st.pyplot(fig)
-        
+        # Plotly pie chart for better percentage visualization
+        pie_chart = px.pie(
+            lead_distribution_df, 
+            values='Percentage', 
+            names='Lead Quality', 
+            title='Lead Quality Distribution (Percentage)', 
+            hole=0.3,  # Creates a donut chart for a cleaner look
+            height=300,  # Adjust height for compactness
+            width=400   # Adjust width for compactness
+        )
+        pie_chart.update_traces(textinfo='percent+label', textfont_size=10, marker=dict(colors=['#4CAF50', '#FF9800', '#F44336']))
+        pie_chart.update_layout(font=dict(size=10), margin=dict(l=20, r=20, t=40, b=20))
+        st.plotly_chart(pie_chart)
+
+        # Download classified leads
         output_file = 'classified_leads.csv'
         csv_data = df.to_csv(index=False).encode('utf-8')
         st.download_button(label="Download Classified Leads", data=csv_data, file_name=output_file, mime='text/csv')
