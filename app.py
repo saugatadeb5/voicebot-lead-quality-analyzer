@@ -71,11 +71,9 @@ def contains_keywords(text, keywords):
 
 def contains_dates(text):
     """Check if the text contains date-related keywords or matches date patterns."""
-    # Check for date-related synonyms (like 'yesterday', 'tomorrow')
     if contains_keywords(text, date_synonyms):
         return True
     
-    # Check for specific date patterns using regex
     for pattern in date_patterns:
         if re.search(pattern, text):
             return True
@@ -101,35 +99,26 @@ def translate_and_classify(text):
         return 'No Utterance Available'
     
     try:
-        # Step 1: Translate the text to English if necessary
         translated_text = translator.translate(text, source='auto', target='en')
         if not translated_text:
             return 'Low Quality Lead'
         
-        # Step 2: Preprocess the translated text (lowercase, remove punctuation)
         cleaned_text = preprocess_text(translated_text)
 
-        # Step 3: Check for date-related patterns or synonyms FIRST
         if contains_dates(cleaned_text):
-            return 'High Quality Lead'  # Directly classify as High Quality Lead if date-related text is found
+            return 'High Quality Lead'
 
-        # Step 4: Check for availability-related phrases
         if contains_keywords(cleaned_text, availability_related_phrases):
-            return 'Medium Quality Lead'  # Classify as Medium Quality if availability phrases are found
+            return 'Medium Quality Lead' 
 
-        # Step 5: Check for negotiation-related phrases
         if contains_keywords(cleaned_text, negotiation_phrases):
-            return 'Medium Quality Lead'  # Classify as Medium Quality if negotiation phrases are found
+            return 'Medium Quality Lead' 
 
-        # Step 6: Check for non-quality indicators
         if contains_keywords(cleaned_text, non_quality_indicators):
-            # If both non-quality indicators AND quality reasons exist, classify as Medium Quality
             if contains_keywords(cleaned_text, quality_reason_keywords):
                 return 'Medium Quality Lead'
-            # Otherwise, it's Low Quality
             return 'Low Quality Lead'
 
-        # Step 7: Check for high-quality conditions (payment intent or positive synonyms with date or quality reasons)
         if contains_keywords(cleaned_text, payment_intent_phrases):
             return 'High Quality Lead'
 
@@ -137,11 +126,9 @@ def translate_and_classify(text):
             if contains_dates(cleaned_text) or contains_keywords(cleaned_text, quality_reason_keywords):
                 return 'High Quality Lead'
 
-        # Step 8: If only quality reasons exist without non-quality indicators, it's Medium Quality
         if contains_keywords(cleaned_text, quality_reason_keywords):
             return 'Medium Quality Lead'
 
-        # Step 9: Default to Low Quality if no other conditions are met
         return 'Low Quality Lead'
 
     except Exception as e:
@@ -252,12 +239,10 @@ if 'processed_df' not in st.session_state:
     st.session_state['processed_df'] = None
 
 if uploaded_file is not None:
-    # Check if a new file has been uploaded, reset session state if a new file is uploaded
     if st.session_state.get('uploaded_filename') != uploaded_file.name:
         st.session_state['processed_df'] = None
         st.session_state['uploaded_filename'] = uploaded_file.name
 
-    # Load the file and process it if not already processed
     df = pd.read_csv(uploaded_file)
     
     if 'utterance' not in df.columns:
@@ -265,41 +250,32 @@ if uploaded_file is not None:
     else:
         st.success("File successfully uploaded. Preparing to analyze...")
         
-        # Check if the dataframe has already been processed
         if st.session_state['processed_df'] is None:
-            # Display dataset statistics
             num_rows = df.shape[0]
             num_columns = df.shape[1]
             st.write(f"Number of Rows: {num_rows}")
             st.write(f"Number of Columns: {num_columns}")
             st.write("Dataset Preview:")
-            st.dataframe(df.head())  # Display the first few rows of the dataframe
+            st.dataframe(df.head())
 
-            # Classify the utterances
             utterances = df['utterance'].tolist()
             df['lead_quality'] = classify_texts_in_batches(utterances)
 
-            # Save the processed dataframe in session state
             st.session_state['processed_df'] = df
         else:
-            # Use the already processed dataframe from session state
             df = st.session_state['processed_df']
 
-        # Get percentage distribution
         lead_distribution = df['lead_quality'].value_counts(normalize=True) * 100
         st.write("Lead Quality Distribution:")
         st.write(lead_distribution)
 
-        # Create a pie chart with smaller label size
-        fig, ax = plt.subplots(figsize=(3, 3))  # Set figure size and DPI for higher resolution
+        fig, ax = plt.subplots(figsize=(3, 3))
         ax.pie(lead_distribution, labels=lead_distribution.index, autopct='%1.1f%%', startangle=90, 
-        colors=['#4CAF50', '#FF9800', '#F44336'], textprops={'fontsize':  7})  # Reduce font size for labels and percentages
-        ax.axis('equal')  # Equal aspect ratio ensures the pie is drawn as a circle.
+        colors=['#4CAF50', '#FF9800', '#F44336'], textprops={'fontsize':  7})
+        ax.axis('equal')
 
-        # Display pie chart
         st.pyplot(fig)
         
-        # Download button for the results
         output_file = 'classified_leads.csv'
         csv_data = df.to_csv(index=False).encode('utf-8')
         st.download_button(label="Download Classified Leads", data=csv_data, file_name=output_file, mime='text/csv')
