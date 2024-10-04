@@ -44,7 +44,6 @@ non_quality_indicators = [
     'decline', 'reject', 'no payment', 'not going to pay', 'cant pay', 'wont pay', 'not paying','हैलो'
 ]
 
-# Add date-related phrases
 date_synonyms = [
     'yesterday', 'today', 'tomorrow', 'day after tomorrow', 'next week',
     'next month', 'call me on', 'reach me on', 'available on', 'please contact on'
@@ -216,7 +215,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown("""
-    <h1 class="stTitle">🚀 LLM-Powered Lead Quality Analyzer</h1>
+    <h1 class="stTitle">🚀 AI-Powered Lead Quality Analyzer</h1>
     <p style="text-align: center; font-size: 1.2em; color: #555;">
         Welcome to the AI-Powered Lead Quality Analyzer! 🌟 This tool utilizes FinBERT for customer sentiment analysis.
     </p>
